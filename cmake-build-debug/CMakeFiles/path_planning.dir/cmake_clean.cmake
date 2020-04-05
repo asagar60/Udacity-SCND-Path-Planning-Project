@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/path_planning.dir/src/additional_helper_func.cpp.o"
   "CMakeFiles/path_planning.dir/src/main.cpp.o"
   "path_planning"
   "path_planning.pdb"

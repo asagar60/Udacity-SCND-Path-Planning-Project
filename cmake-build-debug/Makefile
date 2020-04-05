@@ -123,6 +123,33 @@ path_planning/fast:
 	$(MAKE) -f CMakeFiles/path_planning.dir/build.make CMakeFiles/path_planning.dir/build
 .PHONY : path_planning/fast
 
+src/additional_helper_func.o: src/additional_helper_func.cpp.o
+
+.PHONY : src/additional_helper_func.o
+
+# target to build an object file
+src/additional_helper_func.cpp.o:
+	$(MAKE) -f CMakeFiles/path_planning.dir/build.make CMakeFiles/path_planning.dir/src/additional_helper_func.cpp.o
+.PHONY : src/additional_helper_func.cpp.o
+
+src/additional_helper_func.i: src/additional_helper_func.cpp.i
+
+.PHONY : src/additional_helper_func.i
+
+# target to preprocess a source file
+src/additional_helper_func.cpp.i:
+	$(MAKE) -f CMakeFiles/path_planning.dir/build.make CMakeFiles/path_planning.dir/src/additional_helper_func.cpp.i
+.PHONY : src/additional_helper_func.cpp.i
+
+src/additional_helper_func.s: src/additional_helper_func.cpp.s
+
+.PHONY : src/additional_helper_func.s
+
+# target to generate assembly for a file
+src/additional_helper_func.cpp.s:
+	$(MAKE) -f CMakeFiles/path_planning.dir/build.make CMakeFiles/path_planning.dir/src/additional_helper_func.cpp.s
+.PHONY : src/additional_helper_func.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -159,6 +186,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... path_planning"
 	@echo "... edit_cache"
+	@echo "... src/additional_helper_func.o"
+	@echo "... src/additional_helper_func.i"
+	@echo "... src/additional_helper_func.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

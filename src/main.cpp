@@ -8,6 +8,9 @@
 #include "helpers.h"
 #include "json.hpp"
 #include "spline.h"
+#include <typeinfo>
+#include "additional_helper_func.h"
+
 
 // for convenience
 using nlohmann::json;
@@ -95,9 +98,9 @@ int main() {
 
           // Sensor Fusion Data, a list of all other cars on the same side
           //   of the road.
-          auto sensor_fusion = j[1]["sensor_fusion"];
+          vector<vector<double>>  sensor_fusion = j[1]["sensor_fusion"];
 
-
+          //std::cout << typeid(sensor_fusion).name() << std::endl;
 
 
           json msgJson;
@@ -109,31 +112,21 @@ int main() {
 
           bool too_close = false;
 
-          for (int i = 0; i < sensor_fusion.size(); i++){
+          //int best_lane = Lane_change(sensor_fusion, lane, too_close, car_s, prev_size);
+          bool car_ahead = false;
+          bool car_behind = false;
+          bool car_on_left = false;
+          bool car_on_right = false;
 
-              float d = sensor_fusion[i][6];
-              if (d < (2+4*lane + 2) && d > (2+4*lane-2)){
-                  double vx = sensor_fusion[i][3];
-                  double vy = sensor_fusion[i][4];
-                  double check_speed = sqrt(vx*vx + vy*vy);
-                  double check_car_s = sensor_fusion[i][5];
-
-                  check_car_s += ((double)prev_size*0.02*check_speed);
-
-                  if ((check_car_s > car_s) && (check_car_s-car_s) < 30){
-                      //ref_vel = 29.5; //mph
-
-                      too_close= true;
-                      if(lane > 0){
-                          lane  = 0;
-                      }
-                  }
-              }
-          }
+          check_too_close(sensor_fusion, lane, too_close, car_ahead, car_behind, car_on_left, car_on_right,car_s, prev_size);
 
           if (too_close){
-              ref_vel -= .224;
 
+              ref_vel -= .224;
+              lane = Lane_change(sensor_fusion, lane, too_close, car_ahead, car_behind, car_on_left, car_on_right, car_s, prev_size);
+              //if ((best_lane != -1) && (fabs(best_lane - lane)== 1)){
+               //   lane = best_lane;
+              //}
           }
           else if(ref_vel < 49.5){
               ref_vel +=.224;

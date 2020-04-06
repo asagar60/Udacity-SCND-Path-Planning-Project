@@ -110,20 +110,16 @@ int main() {
               car_s = end_path_s;
           }
 
-          bool too_close = false;
-
+          int current_lane = (int)car_d/4;
           //int best_lane = Lane_change(sensor_fusion, lane, too_close, car_s, prev_size);
-          bool car_ahead = false;
-          bool car_behind = false;
-          bool car_on_left = false;
-          bool car_on_right = false;
 
-          check_too_close(sensor_fusion, lane, too_close, car_ahead, car_behind, car_on_left, car_on_right,car_s, prev_size);
+          //check_too_close(sensor_fusion, lane, too_close, car_ahead, car_behind, car_on_left, car_on_right,car_s, prev_size);
 
-          if (too_close){
+          vector<Vehicle> active_predictions =  predictions(sensor_fusion, current_lane, prev_size, car_s);
+          if (active_predictions[0].too_close){
 
               ref_vel -= .224;
-              lane = Lane_change(sensor_fusion, lane, too_close, car_ahead, car_behind, car_on_left, car_on_right, car_s, prev_size);
+              lane = Lane_change(active_predictions, current_lane, car_s, prev_size);
               //if ((best_lane != -1) && (fabs(best_lane - lane)== 1)){
                //   lane = best_lane;
               //}

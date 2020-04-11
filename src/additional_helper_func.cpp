@@ -27,10 +27,12 @@ int generate_trajectory(vector<Vehicle> active_predictions, string &state, int c
 
 int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string &state, int prev_size, double &ref_vel,
                     double car_d, double car_s, double end_path_s) {
-    vector<string> new_states = successor_states(current_lane);
-    int new_lane = -1;
+
     vector <double> lane_cost (3, 0.0);
-    vector <double> lane_speed(3,0.0);
+    vector<string> new_states = successor_states(current_lane, lane_cost);
+    int new_lane = -1;
+
+    vector <double> lane_speed(3,ref_vel);
 
     if (active_predictions[0].position.compare("None")!=0) {
 
@@ -40,14 +42,13 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
 
         if ((active_predictions[0].current_distance_from_ego > -10 &&
              active_predictions[0].current_distance_from_ego < 30) ||
-            (active_predictions[0].future_distance_from_ego > -10 &&
-             active_predictions[0].future_distance_from_ego < 30)) {
+                (active_predictions[0].future_distance_from_ego < 30)) {
 
             cout << "\n" << "Inside if function of prediction 0";
 
             if (active_predictions[0].speed == MAX_SPEED) {
                 lane_cost[current_lane] -= CAR_MAX_SPEED;
-                lane_speed[current_lane] = ref_vel < MAX_SPEED ? ref_vel + .224 : ref_vel;
+                lane_speed[current_lane] = ref_vel < MAX_SPEED  && ref_vel + .67 <= MAX_SPEED ? ref_vel + .67 : ref_vel;
                 cout << "\n";
                 cout << "MAX Speed Detected" << endl;
                 cout << "For Lane :" << current_lane << " Updated Lane cost to :" << lane_cost[current_lane]
@@ -62,9 +63,9 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
                      << "and lane speed to :" << lane_speed[current_lane] << endl;
 
             }
-        }else{
+        }else {
             lane_cost[current_lane] -= FREE_LANE;
-            lane_speed[current_lane] =  ref_vel < MAX_SPEED ? ref_vel + .224 : ref_vel;
+            lane_speed[current_lane] =  ref_vel < MAX_SPEED  && ref_vel + .67 <= MAX_SPEED ? ref_vel + .67 : ref_vel;
             cout<<"\n";
             cout<<"Free Lane Detected"<<endl;
             cout<<"For Lane :"<<current_lane<<" Updated Lane cost to :"<<lane_cost[current_lane]<< "and lane speed to :"<<lane_speed[current_lane]<<endl;
@@ -73,7 +74,7 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
 
 
            lane_cost[current_lane] -= FREE_LANE;
-           lane_speed[current_lane] =  ref_vel < MAX_SPEED ? ref_vel + .224 : ref_vel;
+           lane_speed[current_lane] =  ref_vel < MAX_SPEED  && ref_vel + .67 <= MAX_SPEED ? ref_vel + .67 : ref_vel;
            cout<<"\n";
            cout<<"Free Lane Detected"<<endl;
            cout<<"For Lane :"<<current_lane<<" Updated Lane cost to :"<<lane_cost[current_lane]<< "and lane speed to :"<<lane_speed[current_lane]<<endl;
@@ -132,16 +133,15 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
                 double check_car_s =
                         active_predictions[1].s + ((double) prev_size * 0.02 * active_predictions[1].speed);
 
-                if ((active_predictions[1].current_distance_from_ego > -10 &&
-                     active_predictions[1].current_distance_from_ego < 30) ||
-                    (active_predictions[1].future_distance_from_ego > -10 &&
-                     active_predictions[1].future_distance_from_ego < 30)) {
+                if ((active_predictions[1].current_distance_from_ego > -20 &&
+                     active_predictions[1].current_distance_from_ego < 50) ||
+                    (active_predictions[1].future_distance_from_ego < 50)) {
 
 
                     cout << "\n" << "Inside if function of prediction 1";
                     if (active_predictions[1].speed == MAX_SPEED) {
                         lane_cost[current_lane - 1] -= CAR_MAX_SPEED;
-                        lane_speed[current_lane - 1] = ref_vel < MAX_SPEED ? ref_vel + .224 : ref_vel;
+                        lane_speed[current_lane - 1] = ref_vel < MAX_SPEED  && ref_vel + .67 <= MAX_SPEED ? ref_vel + .67 : ref_vel;
 
                         cout << "\n";
                         cout << "MAX Speed Detected" << endl;
@@ -158,9 +158,9 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
                              << lane_cost[current_lane - 1] << "and lane speed to :" << lane_speed[current_lane - 1]
                              << endl;
                     }
-                }else{
+                }else {
                     lane_cost[current_lane - 1] -= FREE_LANE;
-                    lane_speed[current_lane - 1] = ref_vel < MAX_SPEED ? ref_vel + .224 : ref_vel;
+                    lane_speed[current_lane - 1] = ref_vel < MAX_SPEED  && ref_vel + .67 <= MAX_SPEED ? ref_vel + .67 : ref_vel;
                     cout << "\n";
                     cout << "Free Lane Detected" << endl;
                     cout << "For Lane :" << current_lane - 1 << " Updated Lane cost to :" << lane_cost[current_lane - 1]
@@ -188,7 +188,7 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
                 */
             } else {
                 lane_cost[current_lane - 1] -= FREE_LANE;
-                lane_speed[current_lane - 1] = ref_vel < MAX_SPEED ? ref_vel + .224 : ref_vel;
+                lane_speed[current_lane - 1] = ref_vel < MAX_SPEED  && ref_vel + .67 <= MAX_SPEED ? ref_vel + .67 : ref_vel;
                 cout << "\n";
                 cout << "Free Lane Detected" << endl;
                 cout << "For Lane :" << current_lane - 1 << " Updated Lane cost to :" << lane_cost[current_lane - 1]
@@ -203,15 +203,14 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
                 double check_car_s =
                         active_predictions[2].s + ((double) prev_size * 0.02 * active_predictions[2].speed);
 
-                if ((active_predictions[2].current_distance_from_ego > -10 &&
-                     active_predictions[2].current_distance_from_ego < 30) ||
-                    (active_predictions[2].future_distance_from_ego > -10 &&
-                     active_predictions[2].future_distance_from_ego < 30)) {
+                if ((active_predictions[2].current_distance_from_ego > -20 &&
+                     active_predictions[2].current_distance_from_ego < 50) ||
+                    (active_predictions[2].future_distance_from_ego < 50)) {
 
                     cout << "\n" << "Inside if function of prediction 2";
                     if (active_predictions[2].speed == MAX_SPEED) {
-                        //lane_cost[current_lane + 1] -= CAR_MAX_SPEED;
-                        lane_speed[current_lane + 1] = ref_vel < MAX_SPEED ? ref_vel + .224 : ref_vel;
+                        lane_cost[current_lane + 1] -= CAR_MAX_SPEED;
+                        lane_speed[current_lane + 1] = ref_vel < MAX_SPEED  && ref_vel + .67 <= MAX_SPEED ? ref_vel + .67 : ref_vel;
 
 
                         cout << "\n";
@@ -235,7 +234,7 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
                 }
                 else{
                     lane_cost[current_lane + 1] -= FREE_LANE;
-                    lane_speed[current_lane + 1] = ref_vel < MAX_SPEED ? ref_vel + .224 : ref_vel;
+                    lane_speed[current_lane + 1] = ref_vel < MAX_SPEED  && ref_vel + .67 <= MAX_SPEED ? ref_vel + .67 : ref_vel;
                     cout << "\n";
                     cout << "Free Lane Detected" << endl;
                     cout << "For Lane :" << current_lane + 1 << " Updated Lane cost to :" << lane_cost[current_lane + 1]
@@ -262,7 +261,7 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
 
                 else {
                     lane_cost[current_lane + 1] -= FREE_LANE;
-                    lane_speed[current_lane + 1] = ref_vel < MAX_SPEED ? ref_vel + .224 : ref_vel;
+                    lane_speed[current_lane + 1] = ref_vel < MAX_SPEED  && ref_vel + .67 <= MAX_SPEED ? ref_vel + .67 : ref_vel;
                     cout << "\n";
                     cout << "Free Lane Detected" << endl;
                     cout << "For Lane :" << current_lane + 1 << " Updated Lane cost to :" << lane_cost[current_lane + 1]
@@ -280,6 +279,8 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
 
     state = "KL";
 
+    /**
+
     if(lane_cost[current_lane-1]==lane_cost[current_lane] || lane_cost[current_lane+1]==lane_cost[current_lane]){
 
         new_lane = current_lane;
@@ -289,6 +290,46 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
         cout<<"Lane cost :"<<lane_cost[new_lane]<<endl;
         cout<<"Lane Speed :"<<lane_speed[new_lane]<<endl;
 
+        return new_lane;
+    }
+
+     */
+
+    if(lane_cost[best_idx] == lane_cost[current_lane]){
+        new_lane = current_lane;
+        ref_vel = lane_speed[new_lane];
+        cout<<"Current Lane :"<<current_lane<<" ";
+        cout<<"Best Lane :"<<new_lane<<endl;
+        cout<<"Lane cost :"<<lane_cost[new_lane]<<endl;
+        cout<<"Lane Speed :"<<lane_speed[new_lane]<<endl;
+
+        return new_lane;
+    }
+    else{
+
+        new_lane = best_idx;
+        ref_vel = lane_speed[new_lane];
+
+        cout<<"\n";
+        cout<<"Current Lane :"<<current_lane<<" ";
+        cout<<"Best Lane :"<<best_idx<<endl;
+        cout<<"Lane cost :"<<lane_cost[new_lane]<<endl;
+        cout<<"Lane Speed :"<<lane_speed[new_lane]<<endl;
+        return new_lane;
+
+    }
+
+    /**
+
+    if (current_lane == best_idx){
+        new_lane = best_idx;
+        ref_vel = lane_speed[new_lane];
+
+        cout<<"\n";
+        cout<<"Current Lane :"<<current_lane<<" ";
+        cout<<"Best Lane :"<<best_idx<<endl;
+        cout<<"Lane cost :"<<lane_cost[best_idx]<<endl;
+        cout<<"Lane Speed :"<<lane_speed[best_idx]<<endl;
         return new_lane;
     }
 
@@ -306,17 +347,21 @@ int lane_trajectory(vector<Vehicle> active_predictions, int current_lane, string
 
         return new_lane;
     }else{
-        ref_vel = lane_speed[current_lane];
+        ref_vel = lane_speed[1];
         cout<<"\n";
-        cout<<"Lane cost :"<<lane_cost[current_lane]<<endl;
-        cout<<"Lane Speed :"<<lane_speed[current_lane]<<endl;
+        cout<<"Lane cost :"<<lane_cost[1]<<endl;
+        cout<<"Lane Speed :"<<lane_speed[1]<<endl;
 
-        return current_lane;
+        return 1;
     }
+
+     */
+
+
 }
 
 
-vector<string> successor_states(int current_lane) {
+vector<string> successor_states(int current_lane, vector<double> &lane_cost) {
     vector<string> states;
     if (current_lane == 1){
         //states.push_back("PLCL");
@@ -326,10 +371,12 @@ vector<string> successor_states(int current_lane) {
     }
     else if (current_lane == 0){
         states.push_back("LCR");
+        lane_cost[2] = INVALID_LANE;
     }
 
     else if(current_lane == 2) {
         states.push_back("LCL");
+        lane_cost[0] = INVALID_LANE;
     }
 
     return states;
@@ -449,7 +496,7 @@ vector<Vehicle> predictions(vector<vector<double>> &sensor_fusion, int current_l
                         active_predictions[0].position = "front";
                         active_predictions[0].s = check_car_s;
                         active_predictions[0].d = d;
-                        active_predictions[0].speed = check_speed;
+                        active_predictions[0].speed = check_speed * 0.44;
                         active_predictions[0].too_close = true;
                     }
                    // active_predictions[0].too_close = true;
@@ -464,7 +511,7 @@ vector<Vehicle> predictions(vector<vector<double>> &sensor_fusion, int current_l
                         active_predictions[1].position = "left";
                         active_predictions[1].s = check_car_s;
                         active_predictions[1].d = d;
-                        active_predictions[1].speed = check_speed;
+                        active_predictions[1].speed = check_speed * 0.44;
                         active_predictions[1].too_close = true;
                     }
                     //active_predictions[1].too_close = true;
@@ -479,7 +526,7 @@ vector<Vehicle> predictions(vector<vector<double>> &sensor_fusion, int current_l
                         active_predictions[2].position = "right";
                         active_predictions[2].s = check_car_s;
                         active_predictions[2].d = d;
-                        active_predictions[2].speed = check_speed;
+                        active_predictions[2].speed = check_speed * 0.44;
                         active_predictions[2].too_close = true;
 
                     }
@@ -496,31 +543,6 @@ vector<Vehicle> predictions(vector<vector<double>> &sensor_fusion, int current_l
         }
     }
 
-    //selecting best lane with possibility of less traffic
-/**
-    int best_idx = -1;
-    double max_value = std::numeric_limits<double>::min();
-    for (int i =0; i < active_predictions.size(); ++i){
-         if (max_value < active_predictions[i].distance_from_ego){
-                max_value = active_predictions[i].distance_from_ego;
-                best_idx = i;
-            }
-    }
-
-*/
-    /**
-
-    //Add free lane cost for most traffic free lane
-
-    if ( best_idx == 0){
-        lane_cost[current_lane] = lane_cost[current_lane] - FREE_LANE;
-    } else if(best_idx == 1){
-        lane_cost[current_lane - 1] = lane_cost[current_lane -1] - FREE_LANE;
-    }else if (best_idx == 2){
-        lane_cost[current_lane + 1] = lane_cost[current_lane + 1] - FREE_LANE;
-    }
-
-     */
 
     return active_predictions;
 }

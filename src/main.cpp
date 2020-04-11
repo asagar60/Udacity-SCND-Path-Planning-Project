@@ -94,14 +94,11 @@ int main() {
           double end_path_s = j[1]["end_path_s"];
           double end_path_d = j[1]["end_path_d"];
 
-          string state = "KL";
           int prev_size = previous_path_x.size();
 
           // Sensor Fusion Data, a list of all other cars on the same side
           //   of the road.
           vector<vector<double>>  sensor_fusion = j[1]["sensor_fusion"];
-
-          //std::cout << typeid(sensor_fusion).name() << std::endl;
 
 
           json msgJson;
@@ -111,37 +108,8 @@ int main() {
               car_s = end_path_s;
           }
 
-          //int current_lane = (int)car_d/4;
-          //int best_lane = -1;
-          //int best_lane = Lane_change(sensor_fusion, lane, too_close, car_s, prev_size);
-
-          //check_too_close(sensor_fusion, lane, too_close, car_ahead, car_behind, car_on_left, car_on_right,car_s, prev_size);
-
-          std::cout<<"Before Trajectory :"<<ref_vel<<"  ";
-
           vector<Vehicle> active_predictions =  predictions(sensor_fusion, lane, prev_size, car_s, end_path_s);
-          lane = generate_trajectory(active_predictions, state, lane, prev_size, ref_vel, car_d, car_s, end_path_s);
-
-            std::cout<<"After Trajectory :"<<ref_vel<<std::endl;
-            std::cout<<"Best Lane :"<<lane<<std::endl;
-
-            /**
-            if (active_predictions[0].too_close){
-
-                ref_vel -= .224;
-                //best_lane = Lane_change(active_predictions, state, lane, prev_size, ref_vel, car_d, car_s);
-                //if ((best_lane != -1) && (fabs(best_lane - lane)== 1)){
-                //    lane = best_lane;
-                //}
-
-                //int new_lane = generate_trajectory(active_predictions, state, lane, prev_size, ref_vel, car_d, car_s);
-
-            }
-
-            else if(ref_vel < 49.5){
-                ref_vel +=.224;
-            }
-  */
+          lane = generate_trajectory(active_predictions, lane, prev_size, ref_vel, car_d, car_s, end_path_s);
 
           // creating vector of points that would be calculated using spline function that will be on that spline curve
           vector<double> ptsx;
@@ -167,22 +135,10 @@ int main() {
               ref_x = previous_path_x[prev_size - 1];
               ref_y = previous_path_y[prev_size - 1];
 
-              /**
-              std::cout<<"Ref X :"<<ref_x<<std::endl;
-              std::cout<<"Ref Y :"<<ref_y<<std::endl;
-*/
-
 
               double ref_x_prev = previous_path_x[prev_size - 2];
               double ref_y_prev = previous_path_y[prev_size - 2];
               ref_yaw = atan2(ref_y - ref_y_prev, ref_x - ref_x_prev);
-/**
-
-              std::cout<<"Ref X PREV:"<<ref_x_prev<<std::endl;
-
-              std::cout<<"Ref X PREV:"<<ref_y_prev<<std::endl;
-              std::cout<<"Ref X yaw :"<<ref_yaw<<std::endl;
-*/
 
               // Use 2 points that make the path tangent to the previous path's end point
 
@@ -196,7 +152,7 @@ int main() {
           }
 
 
-          //In Frenet add evenly 30m spaced points ahead of the starting reference
+          //In Frenet add evenly 60m,90m spaced points ahead of the starting reference
 
           vector<double> next_wp0 = getXY(car_s + 60, (2 + 4*lane), map_waypoints_s, map_waypoints_x, map_waypoints_y);
           vector<double> next_wp1 = getXY(car_s + 90, (2 + 4*lane), map_waypoints_s, map_waypoints_x, map_waypoints_y);

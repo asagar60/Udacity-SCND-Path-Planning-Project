@@ -109,7 +109,7 @@ int main() {
           }
 
           vector<Vehicle> active_predictions =  predictions(sensor_fusion, lane, prev_size, car_s, end_path_s);
-          lane = generate_trajectory(active_predictions, lane, prev_size, ref_vel, car_d, car_s, end_path_s);
+          lane = behavior_planner(active_predictions, lane, prev_size, ref_vel, car_d, car_s, end_path_s);
 
           // creating vector of points that would be calculated using spline function that will be on that spline curve
           vector<double> ptsx;

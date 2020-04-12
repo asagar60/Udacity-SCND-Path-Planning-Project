@@ -33,6 +33,6 @@ const double MAX_SPEED = 49.5;
 
 vector<string> successor_states(int current_lane, vector <double> &lane_cost);
 vector<Vehicle> predictions(vector<vector<double>> &sensor_fusion, int current_lane, double prev_size, double car_s,double end_path_s);
-int generate_trajectory(vector<Vehicle> active_predictions, int current_lane, double prev_size, double &ref_vel, double car_d, double car_s, double end_path_s);
+int behavior_planner(vector<Vehicle> active_predictions, int current_lane, double prev_size, double &ref_vel, double car_d, double car_s, double end_path_s);
 
 #endif //PATH_PLANNING_ADDITIONAL_HELPER_FUNC_H

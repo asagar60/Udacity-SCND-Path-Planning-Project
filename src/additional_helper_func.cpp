@@ -15,7 +15,7 @@ using namespace std;
 using std::vector;
 using std::string;
 
-int generate_trajectory(vector<Vehicle> active_predictions, int current_lane, double prev_size, double &ref_vel,
+int behavior_planner(vector<Vehicle> active_predictions, int current_lane, double prev_size, double &ref_vel,
                     double car_d, double car_s, double end_path_s) {
 
     vector <double> lane_cost (3, 0.0);

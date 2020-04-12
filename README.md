@@ -1,16 +1,90 @@
-# CarND-Path-Planning-Project
-Self-Driving Car Engineer Nanodegree Program
-   
-### Simulator.
-You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2).  
+## Path-Planning-Project
+[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+
+Project - 7: Path Planning Project.
+
+This Project uses spline tool and frenet coordinates to predict other cars future distance and returns optimal lane
+
+Overview
+---
+In this project we will implement path planning algorithm to safely navigate through the highway.
+
+Here the traffic is driving at +-10 MPH of the 50 MPH speed limit. Car's localization ,sensor fusion data, and sparse map list of waypoints around the highway is also provided in real time.
+
+Goal
+---
+The car will try to go as close as possible to the 50 MPH speed limit, which means passing slower traffic when possible. The car will avoid hitting other cars at all cost as well as driving inside of the marked road lanes at all times, unless going from one lane to another. The car will be able to make one complete loop around the 6946m highway.
+
+The present algorithm considers the total acceleration and jerk , and tries to minimize and keep it below 10m/s^2 and 10m/s^3.
+
+[//]: # (Image References)
+
+[image1]: ./Results/7M.png "7M"
+[image2]: ./Results/10M.png "10M"
+[image3]: ./Results/15M.png "15M"
+
+## Output
+
+![Output_gif](./Results/Output_gif.gif)
+
+As per Last Testing the car was able to navigate through the traffic without any incidents and crossed 15 Miles.
+
+7 miles
+![image1]
+
+10 Miles
+![image2]
+
+15 miles
+![image3]
+
+### Video
+
+[Video](./Results/Output.mkv)
+
+### Implementation Strategy
+
+Refer to [this](./Model-documentation/Model-Documentation-PATH-PLANNING-PROJECT.docx) document for detailed Implementation strategy.
+
+## [Rubric](https://review.udacity.com/#!/rubrics/1971/view) points
+----
+
+#### 1.1 Compilation  - The code compiles correctly.
+The code compiles without any errors . The code has been refactored for better readability.
+
+#### 2.1 Valid Trajectories - The car is able to drive at least 4.32 miles without incident.
+The car is able to drive and navigate through the traffic . The car is able to drive for 4.32 miles at minimum and also crossed 15 miles mark (as per latest test results).
+
+#### 2.2 Valid Trajectories - The car drives according to the speed limit.
+The car stays within speed limit of 50MPH. for safety reasons , I chose 49.5 MPH.
+
+#### 2.3 Valid Trajectories - Max Acceleration and Jerk are not Exceeded.
+For the car to avoid Max Acceleration and Jerk, Incremental Approach is used. In this car speed will increase by a factor at each step.
+
+#### 2.4 Valid Trajectories - Car does not have collisions.
+Car avoids collisions by checking and verifying that the car which at front / left / right side will maintain a certain distance . On this basis the ego vehicle's speed is adjusted. Same goes for the Lane Selection.
+
+#### 2.5 Valid Trajectories - The car stays in its lane, except for the time between changing lanes.
+The Ego vehicle stays in the lane , unless it finds a better lane before switching the lanes
+
+#### 2.6 Valid Trajectories - The car is able to change lanes
+The Ego vehicle is able to smoothly change lanes when it makes sense to do so.
+
+
+#### 3.1 Reflection
+
+
+
+### Simulator Details
+
+Download Simulator from [here](https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2)
 
 To run the simulator on Mac/Linux, first make the binary file executable with the following command:
 ```shell
 sudo chmod u+x {simulator_file_name}
 ```
 
-### Goals
-In this project your goal is to safely navigate around a virtual highway with other traffic that is driving +-10 MPH of the 50 MPH speed limit. You will be provided the car's localization and sensor fusion data, there is also a sparse map list of waypoints around the highway. The car should try to go as close as possible to the 50 MPH speed limit, which means passing slower traffic when possible, note that other cars will try to change lanes too. The car should avoid hitting other cars at all cost as well as driving inside of the marked road lanes at all times, unless going from one lane to another. The car should be able to make one complete loop around the 6946m highway. Since the car is trying to go 50 MPH, it should take a little over 5 minutes to complete 1 loop. Also the car should not experience total acceleration over 10 m/s^2 and jerk that is greater than 10 m/s^3.
+### Environment Details
 
 #### The map of the highway is in data/highway_map.txt
 Each waypoint in the list contains  [x,y,s,dx,dy] values. x and y are the waypoint's map coordinate position, the s value is the distance along the road to get to that waypoint in meters, the dx and dy values define the unit normal vector pointing outward of the highway loop.
@@ -43,13 +117,13 @@ Here is the data provided from the Simulator to the C++ Program
 #### Previous path data given to the Planner
 
 //Note: Return the previous list but with processed points removed, can be a nice tool to show how far along
-the path has processed since last time. 
+the path has processed since last time.
 
 ["previous_path_x"] The previous list of x points previously given to the simulator
 
 ["previous_path_y"] The previous list of y points previously given to the simulator
 
-#### Previous path's end s and d values 
+#### Previous path's end s and d values
 
 ["end_path_s"] The previous list's last point's frenet s value
 
@@ -57,7 +131,7 @@ the path has processed since last time.
 
 #### Sensor Fusion Data, a list of all other car's attributes on the same side of the road. (No Noise)
 
-["sensor_fusion"] A 2d vector of cars and then that car's [car's unique ID, car's x position in map coordinates, car's y position in map coordinates, car's x velocity in m/s, car's y velocity in m/s, car's s position in frenet coordinates, car's d position in frenet coordinates. 
+["sensor_fusion"] A 2d vector of cars and then that car's [car's unique ID, car's x position in map coordinates, car's y position in map coordinates, car's x velocity in m/s, car's y velocity in m/s, car's s position in frenet coordinates, car's d position in frenet coordinates.
 
 ## Details
 
@@ -87,59 +161,7 @@ A really helpful resource for doing this project and creating smooth trajectorie
   * Run either `install-mac.sh` or `install-ubuntu.sh`.
   * If you install from source, checkout to commit `e94b6e1`, i.e.
     ```
-    git clone https://github.com/uWebSockets/uWebSockets 
+    git clone https://github.com/uWebSockets/uWebSockets
     cd uWebSockets
     git checkout e94b6e1
     ```
-
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-

@@ -42,9 +42,6 @@ As per Last Testing the car was able to navigate through the traffic without any
 
 [Video](./Results/Output.mkv)
 
-### Implementation Strategy
-
-Refer to [this](./Model-documentation/Model-Documentation-PATH-PLANNING-PROJECT.docx) document for detailed Implementation strategy.
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/1971/view) points
 ----
@@ -72,7 +69,7 @@ The Ego vehicle is able to smoothly change lanes when it makes sense to do so.
 
 
 #### 3.1 Reflection
-
+Refer to [this](./Model-documentation/Model-Documentation-PATH-PLANNING-PROJECT.docx) document for detailed Implementation strategy.
 
 
 ### Simulator Details
